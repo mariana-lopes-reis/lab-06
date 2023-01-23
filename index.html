@@ -170,6 +170,19 @@
             return Math.floor(Math.random() * (maximum - minimum + 1) + minimum)
         }
 
+        function isInputValid(input, value, minimum, maximum) {
+            if (minimum && maximum && (value < minimum || value > maximum)) {
+                alert(`O campo ${input} deve estar entre ${minimum} e ${maximum}.`);
+                return false;
+            }
+            else if (minimum && (value < minimum)) {
+                alert(`O campo ${input} deve estar acima de ${minimum}.`);
+                return false;
+            }
+
+            return true;
+        }
+
         $(document).ready(function () {
             let array = [];
 
@@ -247,35 +260,53 @@
             // inserir elemento no array
             const insertButton = $("#insertButton");
             insertButton.on("click", function () {
-                // inserir no array
+                // obter os inputs
                 const value = +$("#insertValueInput").val();
-                array.push(value);
 
-                // atualizar as labels
-                updateLabels(array);
+                // validar os inputs
+                if (isInputValid('valor', value, 1, 100)) {
+
+                    // atualizar o array
+                    array.push(value);
+
+                    // atualizar as labels
+                    updateLabels(array);
+                }
             });
 
             // alterar elemento do array
             const changeButton = $("#changeButton");
             changeButton.on("click", function () {
-                // alterar no array
-                const position = +$("#changePositionInput").val() - 1;
+                // obter os inputs
+                const position = +$("#changePositionInput").val();
                 const value = +$("#changeValueInput").val();
-                array[position] = value;
 
-                // atualizar as labels
-                updateLabels(array);
+                // validar os inputs
+                if (isInputValid('posição', position, 1, array.length) && isInputValid('valor', value, 1, 100)) {
+
+                    // atualizar o array
+                    array[position - 1] = value;
+
+                    // atualizar as labels
+                    updateLabels(array);
+                }
             });
 
             // remover elemento do array
             const removeButton = $("#removeButton");
             removeButton.on("click", function () {
-                // alterar no array
-                const position = +$("#removePositionInput").val() - 1;
-                array.splice(position, 1);
+                // obter os inputs
+                const position = +$("#removePositionInput").val();
 
-                // atualizar as labels
-                updateLabels(array);
+                // validar os inputs
+                if (isInputValid('position', position, 1, array.length)) {
+
+                    // atualizar o array
+                    array.splice(position - 1, 1);
+
+                    // atualizar as labels
+                    updateLabels(array);
+                }
             });
         });
     </script>
@@ -508,7 +539,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Valor</span>
                                 </div>
-                                <input id="insertValueInput" name="insertValueInput" class="form-control" type="number" min="1" max="100">
+                                <input id="insertValueInput" name="insertValueInput" class="form-control" type="number">
                             </div>
                         </div>
                     </div>
@@ -534,8 +565,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Posição e Valor</span>
                                 </div>
-                                <input id="changeValueInput" name="changeValueInput" class="form-control" type="number" min="1" max="100">
-                                <input id="changePositionInput" name="changePositionInput" class="form-control" type="number" min="1">
+                                <input id="changePositionInput" name="changePositionInput" class="form-control" type="number">
+                                <input id="changeValueInput" name="changeValueInput" class="form-control" type="number">
                             </div>
                         </div>
                     </div>
@@ -559,9 +590,9 @@
                         <div class="col">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text">Valor</span>
+                                    <span class="input-group-text">Posição</span>
                                 </div>
-                                <input id="removePositionInput" name="removePositionInput" class="form-control" type="number" min="1">
+                                <input id="removePositionInput" name="removePositionInput" class="form-control" type="number">
                             </div>
                         </div>
                     </div>
