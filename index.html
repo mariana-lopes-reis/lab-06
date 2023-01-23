@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+        crossorigin="anonymous"
+    ></link>
+    <style>
+        span {
+            white-space: pre-line
+        }
+
+        .row {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-body {
+            text-align: center;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    </style>
+    <script
+        src="https://code.jquery.com/jquery-3.6.1.slim.min.js"
+        integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA="
+        crossorigin="anonymous"
+    ></script>
+    <script>
+        function shuffle(array) {
+            let currentIndex = array.length;
+            let randomIndex = null;
+
+            // While there remain elements to shuffle.
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [ array[randomIndex], array[currentIndex]];
+            }
+
+            return array;
+        }
+
+        function updateLabels(array) {
+            let label = '';
+
+            // criar a label
+            for(let i=0; i<array.length; i += 1) {
+                const currentElement = array[i];
+
+                if (currentElement < 0) {
+                    label += `<span class="red">${currentElement}</span>`;
+                }
+                else {
+                    label += `<span class="green">${currentElement}</span>`;
+                }
+
+                if (i !== array.length - 1) {
+                    label += ', ';
+                }
+            }
+
+            // mostrar o array no ecrã
+            const arrayLabel = $("#arrayLabel");
+            arrayLabel.html(label);
+
+            // mostrar o primeiro no ecrã
+            const arrayFirstElement = $("#arrayFirstElement");
+            arrayFirstElement.text(array[0]);
+
+            // mostrar o último no ecrã
+            const arrayLastElement = $("#arrayLastElement");
+            arrayLastElement.text(array[array.length - 1]);
+
+            // mostrar o tamanho no ecrã
+            const arraySize = $("#arraySize");
+            arraySize.text(array.length);
+
+            // mostrar o número de repetidos no ecrã
+            let numberOfRepeatedElements = 0;
+            let repeatedElements = [];
+
+            for(let i=0; i<array.length; i++) {
+                const currentElement = array[i];
+                const numberOfCopies = array.filter((element) => element === currentElement).length;
+                const hasRepeatedElementAlreadyBeenFound = repeatedElements.some((element) => element === currentElement);
+
+                if (numberOfCopies >= 2 && !hasRepeatedElementAlreadyBeenFound) {
+                    numberOfRepeatedElements++;
+                    repeatedElements.push(currentElement);
+                }
+            }
+
+            const arrayNumberOfRepeatedElements = $("#arrayNumberOfRepeatedElements");
+            arrayNumberOfRepeatedElements.text(numberOfRepeatedElements);
+
+            // mostrar a soma no ecrã
+            let sum = 0;
+
+            for(let i=0; i<array.length; i++) {
+                const currentElement = array[i];
+                
+                sum = sum + currentElement;
+            }
+
+            const arraySum = $("#arraySum");
+            arraySum.text(sum);
+
+            // mostrar a média no ecrã
+            let average = 0;
+
+            for(let i=0; i<array.length; i++) {
+                const currentElement = array[i];
+
+                average = average + currentElement;
+            }
+
+            average = average / array.length;
+
+            const arrayAverage = $("#arrayAverage");
+            arrayAverage.text(average);
+
+            // mostrar a mediana no ecrã
+            const arrayMedian = $("#arrayMedian");
+            arrayMedian.text(array[Math.round(array.length / 2)]);
+
+            // mostrar o máximo no ecrã
+            let maximum = array[0];
+
+            for(let i=1; i<array.length; i++) {
+                const currentElement = array[i];
+                
+                if (currentElement > maximum) {
+                    maximum = currentElement;
+                }
+            }
+
+            const arrayMaximum = $("#arrayMaximum");
+            arrayMaximum.text(maximum);
+
+            // mostrar o mínimo no ecrã
+            let minimum = array[0];
+
+            for(let i=1; i<array.length; i++) {
+                const currentElement = array[i];
+                
+                if (currentElement < minimum) {
+                    minimum = currentElement;
+                }
+            }
+
+            const arrayMinimum = $("#arrayMinimum");
+            arrayMinimum.text(minimum);
+        }
+
+        function generateRandomNumber(minimum, maximum) {
+            return Math.floor(Math.random() * (maximum - minimum + 1) + minimum)
+        }
+
+        $(document).ready(function () {
+            let array = [];
+
+            // gerar um array de 1 a 100
+            for(let i=0; i<100; i++) {
+                array.push(i+1);
+            }
+
+            // atualizar as labels
+            updateLabels(array);
+
+            // listar o array
+            const fillInOrderButton = $("#fillInOrderButton");
+            fillInOrderButton.on("click", function () {
+                let label = '';
+
+                // limpar o array
+                array = [];
+
+                // gerar um array de 1 a 100
+                for(let i=0; i<100; i++) {
+                    array.push(i + 1);
+                }
+
+                // atualizar as labels
+                updateLabels(array);
+            });
+
+            // listar o array de 2 em 2
+            const fill2By2Button = $("#fill2By2Button");
+            fill2By2Button.on("click", function () {
+                let label = '';
+
+                // limpar o array
+                array = [];
+
+                // gerar um array de 1 a 100 de 2 em 2
+                for(let i=0; i<50; i++) {
+                    array.push(i * 2 + 1);
+                }
+
+                // atualizar as labels
+                updateLabels(array);
+            });
+
+            // preencher o array
+            const fillRandomButton = $("#fillRandomButton");
+            fillRandomButton.on("click", function () {
+                let label = '';
+
+                // limpar o array
+                array = [];
+
+                // gerar um array de -100 a 100
+                for(let i=0; i<100; i++) {
+                    array.push(generateRandomNumber(-100, 100));
+                }
+
+                // atualizar as labels
+                updateLabels(array);
+            });
+
+            // baralhar o array
+            const shuffleButton = $("#shuffleButton");
+            shuffleButton.on("click", function () {
+                let label = '';
+
+                // baralhar o array
+                array = shuffle(array);
+
+                // atualizar as labels
+                updateLabels(array);
+            });
+
+            // inserir elemento no array
+            const insertButton = $("#insertButton");
+            insertButton.on("click", function () {
+                // inserir no array
+                const value = +$("#insertValueInput").val();
+                array.push(value);
+
+                // atualizar as labels
+                updateLabels(array);
+            });
+
+            // alterar elemento do array
+            const changeButton = $("#changeButton");
+            changeButton.on("click", function () {
+                // alterar no array
+                const position = +$("#changePositionInput").val() - 1;
+                const value = +$("#changeValueInput").val();
+                array[position] = value;
+
+                // atualizar as labels
+                updateLabels(array);
+            });
+
+            // remover elemento do array
+            const removeButton = $("#removeButton");
+            removeButton.on("click", function () {
+                // alterar no array
+                const position = +$("#removePositionInput").val() - 1;
+                array.splice(position, 1);
+
+                // atualizar as labels
+                updateLabels(array);
+            });
+        });
+    </script>
+    
+
+    <!-- titulo -->
+    <div class="row">
+        <div class="col text-center">
+            <h1>Arrays</h1>
+        </div>
+    </div>
+
+    <!-- array -->
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="card mx-auto">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label>Array</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div id="arrayLabel"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- indicações -->
+    <div class="row justify-content-center">
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="arrayFirstElement">Primeiro</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <label id="arrayFirstElement"></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="arrayLastElement">Último</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <label id="arrayLastElement"></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="arraySize">Tamanho</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <label id="arraySize"></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="arrayNumberOfRepeatedElements">Repetidos</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <label id="arrayNumberOfRepeatedElements"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- indicações -->
+    <div class="row justify-content-center">
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="arraySum">Soma</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <label id="arraySum"></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="arrayMedian">Mediana</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <label id="arrayMedian"></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="arrayAverage">Média</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <label id="arrayAverage"></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="arrayMaximum">Máximo</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <label id="arrayMaximum"></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="arrayMinimum">Mínimo</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <label id="arrayMinimum"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- acções -->
+    <div class="row justify-content-center">
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <span>Preencher 1 a 100</span>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <button id="fillInOrderButton" class="btn btn-primary" type="button">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <span>Preencher -100 a 100</span>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <button id="fillRandomButton" class="btn btn-primary" type="button">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <span>Preencher de 2 em 2</span>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <button id="fill2By2Button" class="btn btn-primary" type="button">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <span>Baralhar</span>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <button id="shuffleButton" class="btn btn-primary" type="button">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- acções -->
+    <div class="row justify-content-center">
+        <div class="col-3">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text">
+                        <label for="betBalanceInput">Inserir Elemento no Array</label>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Valor</span>
+                                </div>
+                                <input id="insertValueInput" name="insertValueInput" class="form-control" type="number" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <button id="insertButton" class="btn btn-primary" type="button">Inserir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text" id="betTotalLabel">
+                        <span>Alterar Elemento do Array</span>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Posição e Valor</span>
+                                </div>
+                                <input id="changeValueInput" name="changeValueInput" class="form-control" type="number" min="1" max="100">
+                                <input id="changePositionInput" name="changePositionInput" class="form-control" type="number" min="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <button id="changeButton" class="btn btn-primary" type="button">Alterar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card">
+                <div class="card-header text-center">
+                    <p class="card-text" id="betTotalLabel">
+                        <span>Retirar Elemento do Array</span>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Valor</span>
+                                </div>
+                                <input id="removePositionInput" name="removePositionInput" class="form-control" type="number" min="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <button id="removeButton" class="btn btn-primary" type="button">Remover</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+
+</html>
